@@ -5,7 +5,7 @@ The Salut protocol is a Swift 4 protocol for encrypted data transfer via Bonjour
 
 Salut requires `CryptoSwift`. View their [installation instructions](https://github.com/krzyzanowskim/CryptoSwift) first.
 
-To install Salut, simply drop the source files in `src` into your XCode app.
+To install Salut, simply drop the source files from `src` into your XCode app.
 
 # Usage
 
