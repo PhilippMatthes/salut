@@ -38,6 +38,27 @@ server.prepare()
 server.delegate = self
 ```
 
+To react to specific server events, simply implement the `SalutServerDelegate` protocol. Here is an example with `AppDelegate` as the host class:
+```swift
+extension AppDelegate: SalutServerDelegate {
+    func server(_ server: SalutServer, receivedSearchRequest package: Package) {
+        print("Received search request.")
+    }
+    
+    func server(_ server: SalutServer, sentSearchResponse package: Package) {
+        print("Sent search response.")
+    }
+    
+    func server(_ server: SalutServer, receivedDataTransmission package: Package) {
+        print("Received data transmission.")
+    }
+    
+    func server(_ server: SalutServer, receivedDecryptedTransmission data: String) {
+        print("Received decrypted transmission.")
+    }
+}
+```
+
 ## Running the Salut Client
 
 Similarly to the server, just initialize a client on your device, from which you want to send information, with:
@@ -45,6 +66,31 @@ Similarly to the server, just initialize a client on your device, from which you
 let client = SalutClient(peerId: id, password: code)
 client.prepare()
 client.delegate = self
+```
+The client has its own `SalutClientDelegate` as well. Here is an example with a host controller named `ConnectionController`:
+
+```swift
+extension ConnectionController: SalutClientDelegate {
+    func client(_ client: SalutClient, didChangeConnectedDevices connectedDevices: [String]) {
+        print("Client did change connected devices: \(connectedDevices)")
+    }
+    
+    func client(_ client: SalutClient, sentSearchRequest package: Package) {
+        print("Client sent search request: \(package.description)")
+    }
+    
+    func client(_ client: SalutClient, receivedSearchResponse package: Package) {
+        print("Client received search response: \(package.description)")
+    }
+    
+    func client(_ client: SalutClient, recievedDecryptableSearchResponse response: String) {
+        print("Client received decryptable search response: \(response)")
+    }
+    
+    func client(_ client: SalutClient, sentData package: Package) {
+        print("Client sent data: \(package.description)")
+    } 
+}
 ```
 
 ## Setting the password on running clients or servers
