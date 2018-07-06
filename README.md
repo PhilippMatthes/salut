@@ -88,7 +88,7 @@ func server(_ server: SalutServer, receivedDecryptedTransmission data: String) {
 
 # Contribution
 
-Feel free to contribute to my project, it is not finished yet. 
+Feel free to contribute to my project, just open a Pull Request! 
 
 # License
 
