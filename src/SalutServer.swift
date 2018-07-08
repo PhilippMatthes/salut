@@ -20,14 +20,15 @@
 //    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //    SOFTWARE.
 
-
 import Foundation
+import MultipeerConnectivity
 
 protocol SalutServerDelegate {
     func server(_ server: SalutServer, receivedSearchRequest package: Package)
     func server(_ server: SalutServer, sentSearchResponse package: Package)
     func server(_ server: SalutServer, receivedDataTransmission package: Package)
     func server(_ server: SalutServer, receivedDecryptedTransmission data: String)
+    func server(_ server: SalutServer, didChangeConnectedDevices connectedDevices: [MCPeerID])
 }
 
 class SalutServer: Salut {
@@ -66,8 +67,8 @@ class SalutServer: Salut {
 }
 
 extension SalutServer: BonjourDelegate {
-    func manager(_ manager: Bonjour, didChangeConnectedDevices connectedDevices: [String]) {
-        // Nothing
+    func manager(_ manager: Bonjour, didChangeConnectedDevices connectedDevices: [MCPeerID]) {
+        delegate?.server(self, didChangeConnectedDevices: connectedDevices)
     }
     
     func manager(_ manager: Bonjour, transmittedPayload payload: String) {
@@ -82,4 +83,6 @@ extension SalutServer: BonjourDelegate {
         }
     }
 }
+
+
 

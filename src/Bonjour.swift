@@ -7,7 +7,7 @@ import Foundation
 import MultipeerConnectivity
 
 protocol BonjourDelegate {
-    func manager(_ manager: Bonjour, didChangeConnectedDevices connectedDevices: [String])
+    func manager(_ manager: Bonjour, didChangeConnectedDevices connectedDevices: [MCPeerID])
     func manager(_ manager: Bonjour, transmittedPayload payload: String)
 }
 
@@ -25,7 +25,7 @@ class Bonjour: NSObject {
     var delegate: BonjourDelegate?
     
     lazy var session : MCSession = {
-        let session = MCSession(peer: self.peerId, securityIdentity: nil, encryptionPreference: .required)
+        let session = MCSession(peer: self.peerId, securityIdentity: nil, encryptionPreference: .none)
         session.delegate = self
         return session
     }()
@@ -89,13 +89,14 @@ extension Bonjour: MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
-        NSLog("%@", "invitePeer: \(peerID)")
-        browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        if !session.connectedPeers.contains(peerID) {
+            NSLog("%@", "invitePeer: \(peerID)")
+            browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        }
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
-        session.cancelConnectPeer(peerID)
     }
     
 }
@@ -103,7 +104,7 @@ extension Bonjour: MCNearbyServiceBrowserDelegate {
 extension Bonjour: MCSessionDelegate {
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        self.delegate?.manager(self, didChangeConnectedDevices: session.connectedPeers.map{$0.displayName})
+        self.delegate?.manager(self, didChangeConnectedDevices: session.connectedPeers)
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
@@ -125,4 +126,6 @@ extension Bonjour: MCSessionDelegate {
     }
     
 }
+
+
 

@@ -22,13 +22,14 @@
 
 
 import Foundation
+import MultipeerConnectivity
 
 protocol SalutClientDelegate {
     func client(_ client: SalutClient, sentSearchRequest package: Package)
     func client(_ client: SalutClient, receivedSearchResponse package: Package)
     func client(_ client: SalutClient, recievedDecryptableSearchResponse response: String)
     func client(_ client: SalutClient, sentData package: Package)
-    func client(_ client: SalutClient, didChangeConnectedDevices connectedDevices: [String])
+    func client(_ client: SalutClient, didChangeConnectedDevices connectedDevices: [MCPeerID])
 }
 
 class SalutClient: Salut {
@@ -66,7 +67,7 @@ class SalutClient: Salut {
 }
 
 extension SalutClient: BonjourDelegate {
-    func manager(_ manager: Bonjour, didChangeConnectedDevices connectedDevices: [String]) {
+    func manager(_ manager: Bonjour, didChangeConnectedDevices connectedDevices: [MCPeerID]) {
         delegate?.client(self, didChangeConnectedDevices: connectedDevices)
     }
     
@@ -80,3 +81,4 @@ extension SalutClient: BonjourDelegate {
         }
     }
 }
+
